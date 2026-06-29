@@ -8,16 +8,22 @@ echo "=== Health check ==="
 curl -s http://localhost:8080/health
 echo ""
 
-echo "=== Root ==="
-curl -s http://localhost:8080/
-echo ""
-
 echo "=== Missing url param ==="
 curl -s "http://localhost:8080/extract"
 echo ""
 
 echo "=== Invalid URL ==="
 curl -s "http://localhost:8080/extract?url=not-a-youtube-link"
+echo ""
+
+echo "=== Audio format param (GET) ==="
+curl -s "http://localhost:8080/extract?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ&format=audio"
+echo ""
+
+echo "=== Audio format param (POST) ==="
+curl -s -X POST http://localhost:8080/extract \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "format": "audio"}'
 echo ""
 
 echo "=== 404 ==="

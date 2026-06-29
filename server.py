@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""yt-service — extract playable MP4 links from YouTube URLs via yt-dlp."""
+"""yt-service — extract playable MP4/audio links from YouTube URLs via yt-dlp."""
 
 import json
 import os
@@ -25,10 +25,20 @@ def is_valid_youtube_url(url: str) -> bool:
     return any(re.search(p, url) for p in patterns)
 
 
-def extract_urls(video_url: str) -> list[str]:
-    """Run yt-dlp -g to extract direct media URLs. Returns list of URLs."""
+def extract_urls(video_url: str, mode: str = "video") -> list[str]:
+    """Run yt-dlp -g to extract direct media URLs.
+
+    Args:
+        video_url: YouTube video URL.
+        mode: "video" (default) for MP4 video, "audio" for audio-only.
+    """
+    if mode == "audio":
+        fmt = "bestaudio[ext=m4a]/bestaudio"
+    else:
+        fmt = "best[ext=mp4]/best"
+
     result = subprocess.run(
-        [YT_DLP, "-g", "-f", "best[ext=mp4]/best", video_url],
+        [YT_DLP, "-g", "-f", fmt, "--no-playlist", video_url],
         capture_output=True,
         text=True,
         timeout=TIMEOUT,
@@ -75,14 +85,15 @@ class Handler(BaseHTTPRequestHandler):
             if not url:
                 self._send_error_json("Missing 'url' parameter", 400)
                 return
-            self._handle_extract(url)
+            fmt = params.get("format", ["video"])[0]
+            self._handle_extract(url, fmt)
             return
 
         if parsed.path == "/":
             self.send_response(200)
             self.send_header("Content-Type", "text/plain; charset=utf-8")
             self.end_headers()
-            self.wfile.write(b"yt-service: /extract?url=<youtube_url>\n")
+            self.wfile.write(b"yt-service: /extract?url=<youtube_url>[&format=audio]\n")
             return
 
         self._send_error_json("Not found", 404)
@@ -103,7 +114,8 @@ class Handler(BaseHTTPRequestHandler):
             if not url:
                 self._send_error_json("Missing 'url' in JSON body", 400)
                 return
-            self._handle_extract(url)
+            fmt = data.get("format", "video")
+            self._handle_extract(url, fmt)
             return
 
         self._send_error_json("Not found", 404)
@@ -115,13 +127,13 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
 
-    def _handle_extract(self, url: str) -> None:
+    def _handle_extract(self, url: str, fmt: str) -> None:
         if not is_valid_youtube_url(url):
             self._send_error_json("Invalid YouTube URL", 400)
             return
 
         try:
-            urls = extract_urls(url)
+            urls = extract_urls(url, mode=fmt)
         except subprocess.TimeoutExpired:
             self._send_error_json("yt-dlp timed out", 504)
             return
@@ -131,6 +143,7 @@ class Handler(BaseHTTPRequestHandler):
 
         self._send_json({
             "source": url,
+            "format": fmt,
             "urls": urls,
         })
 
