@@ -10,7 +10,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from socketserver import ThreadingMixIn
 
 YT_DLP = os.environ.get("YT_DLP_PATH", "yt-dlp")
-PORT = int(os.environ.get("PORT", 8080))
+PORT = int(os.environ.get("PORT", 80))
 TIMEOUT = int(os.environ.get("YT_DLP_TIMEOUT", 30))
 
 

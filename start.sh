@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 
 PID_FILE="${PID_FILE:-yt-service.pid}"
 LOG_FILE="${LOG_FILE:-yt-service.log}"
-PORT="${PORT:-8080}"
+PORT="${PORT:-80}"
 
 if [[ -f "$PID_FILE" ]]; then
     PID="$(cat "$PID_FILE")"

@@ -9,20 +9,20 @@ HTTP service that accepts a YouTube video link and returns playable MP4 URLs via
 Health check.
 
 ```
-curl http://localhost:8080/health
+curl http://localhost/health
 # {"status":"ok"}
 ```
 
 ### `GET /extract?url=<youtube_url>`
 
 ```
-curl "http://localhost:8080/extract?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+curl "http://localhost/extract?url=https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 ```
 
 ### `POST /extract`
 
 ```bash
-curl -X POST http://localhost:8080/extract \
+curl -X POST http://localhost/extract \
   -H "Content-Type: application/json" \
   -d '{"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}'
 ```
@@ -63,7 +63,7 @@ them with `PID_FILE` and `LOG_FILE`.
 
 | Variable | Default | Description |
 |-----------|---------|-------------|
-| `PORT` | 8080 | Listen port |
+| `PORT` | 80 | Listen port |
 | `YT_DLP_PATH` | yt-dlp | Path to yt-dlp binary |
 | `YT_DLP_TIMEOUT` | 30 | Timeout in seconds |
 
