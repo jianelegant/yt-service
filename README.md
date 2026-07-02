@@ -44,6 +44,21 @@ Response:
 python3 server.py
 ```
 
+Run in the background:
+
+```bash
+./start.sh
+```
+
+Stop the background service:
+
+```bash
+./stop.sh
+```
+
+The scripts use `yt-service.pid` and `yt-service.log` by default. You can override
+them with `PID_FILE` and `LOG_FILE`.
+
 ### Environment variables
 
 | Variable | Default | Description |
