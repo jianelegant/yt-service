@@ -16,7 +16,13 @@ if [[ -f "$PID_FILE" ]]; then
     rm -f "$PID_FILE"
 fi
 
-nohup env PORT="$PORT" YT_DLP_PATH="${YT_DLP_PATH:-yt-dlp}" YT_DLP_TIMEOUT="${YT_DLP_TIMEOUT:-30}" \
+nohup env PORT="$PORT" \
+    YT_DLP_PATH="${YT_DLP_PATH:-yt-dlp}" \
+    YT_DLP_TIMEOUT="${YT_DLP_TIMEOUT:-30}" \
+    YT_DLP_COOKIES="${YT_DLP_COOKIES:-}" \
+    YT_DLP_COOKIES_FROM_BROWSER="${YT_DLP_COOKIES_FROM_BROWSER:-}" \
+    YT_DLP_JS_RUNTIME="${YT_DLP_JS_RUNTIME:-}" \
+    YT_DLP_EXTRA_ARGS="${YT_DLP_EXTRA_ARGS:-}" \
     python3 server.py >> "$LOG_FILE" 2>&1 &
 PID=$!
 echo "$PID" > "$PID_FILE"

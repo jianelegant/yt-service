@@ -66,6 +66,10 @@ them with `PID_FILE` and `LOG_FILE`.
 | `PORT` | 80 | Listen port |
 | `YT_DLP_PATH` | yt-dlp | Path to yt-dlp binary |
 | `YT_DLP_TIMEOUT` | 30 | Timeout in seconds |
+| `YT_DLP_COOKIES` | empty | Path to a Netscape-format cookies.txt file |
+| `YT_DLP_COOKIES_FROM_BROWSER` | empty | Browser profile source for yt-dlp, for example `chrome` |
+| `YT_DLP_JS_RUNTIME` | empty | JavaScript runtime passed to yt-dlp, for example `node` |
+| `YT_DLP_EXTRA_ARGS` | empty | Extra yt-dlp CLI args |
 
 ## Requirements
 

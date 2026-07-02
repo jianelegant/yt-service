@@ -12,6 +12,10 @@ from socketserver import ThreadingMixIn
 YT_DLP = os.environ.get("YT_DLP_PATH", "yt-dlp")
 PORT = int(os.environ.get("PORT", 80))
 TIMEOUT = int(os.environ.get("YT_DLP_TIMEOUT", 30))
+YT_DLP_COOKIES = os.environ.get("YT_DLP_COOKIES")
+YT_DLP_COOKIES_FROM_BROWSER = os.environ.get("YT_DLP_COOKIES_FROM_BROWSER")
+YT_DLP_JS_RUNTIME = os.environ.get("YT_DLP_JS_RUNTIME")
+YT_DLP_EXTRA_ARGS = os.environ.get("YT_DLP_EXTRA_ARGS", "")
 
 
 def is_valid_youtube_url(url: str) -> bool:
@@ -37,8 +41,19 @@ def extract_urls(video_url: str, mode: str = "video") -> list[str]:
     else:
         fmt = "best[ext=mp4]/best"
 
+    cmd = [YT_DLP, "-g", "-f", fmt, "--no-playlist"]
+    if YT_DLP_COOKIES:
+        cmd.extend(["--cookies", YT_DLP_COOKIES])
+    if YT_DLP_COOKIES_FROM_BROWSER:
+        cmd.extend(["--cookies-from-browser", YT_DLP_COOKIES_FROM_BROWSER])
+    if YT_DLP_JS_RUNTIME:
+        cmd.extend(["--js-runtimes", YT_DLP_JS_RUNTIME])
+    if YT_DLP_EXTRA_ARGS:
+        cmd.extend(YT_DLP_EXTRA_ARGS.split())
+    cmd.append(video_url)
+
     result = subprocess.run(
-        [YT_DLP, "-g", "-f", fmt, "--no-playlist", video_url],
+        cmd,
         capture_output=True,
         text=True,
         timeout=TIMEOUT,
